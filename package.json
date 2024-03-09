@@ -1,0 +1,27 @@
+{
+  "name": "WinyamaDroneYard",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "sst dev",
+    "build": "sst build",
+    "deploy": "sst deploy",
+    "remove": "sst remove",
+    "console": "sst console",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@tsconfig/node18": "^18.2.2",
+    "aws-cdk-lib": "2.124.0",
+    "constructs": "10.3.0",
+    "sst": "^2.40.6",
+    "typescript": "^5.4.2"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "dependencies": {
+    "@aws-cdk/aws-batch-alpha": "^2.67.0-alpha.0"
+  }
+}
