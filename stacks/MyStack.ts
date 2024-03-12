@@ -16,11 +16,21 @@ const awsConfig = require('../awsconfig.json');
 const __dirname = path.resolve();
 
 export function DroneYardStack({ stack }: StackContext) {
-  // Get the default VPC
-  const vpc = ec2.Vpc.fromLookup(stack, 'VPC', {
-    // This imports the default VPC but you can also
-    // specify a 'vpcName' or 'tags'.
-    isDefault: true,
+  const vpc = new ec2.Vpc(stack, 'VPC', {
+    // This creates a new VPC
+    natGateways: 0,
+    subnetConfiguration: [
+      {
+        name: 'Public',
+        cidrMask: 24,
+        subnetType: ec2.SubnetType.PUBLIC
+      },
+      {
+        name: 'Private',
+        cidrMask: 24,
+        subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS
+      }
+    ]
   });
 
   // Create our launch template (mainly we need to attach the userdata.sh script as user data)
