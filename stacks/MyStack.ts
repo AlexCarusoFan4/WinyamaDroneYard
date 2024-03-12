@@ -24,11 +24,6 @@ export function DroneYardStack({ stack }: StackContext) {
         name: 'Public',
         cidrMask: 24,
         subnetType: ec2.SubnetType.PUBLIC
-      },
-      {
-        name: 'Private',
-        cidrMask: 24,
-        subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS
       }
     ]
   });
