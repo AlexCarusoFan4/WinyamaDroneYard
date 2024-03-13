@@ -1,0 +1,4 @@
+# Shell files
+[docker/entry.sh]
+[packages/functions/docker/entry.sh]
+end_of_line = lf
