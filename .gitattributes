@@ -1,3 +1,0 @@
-* text=auto
-/docker/entry.sh text eol=lf
-/packages/functions/docker/entry.sh text eol=lf
