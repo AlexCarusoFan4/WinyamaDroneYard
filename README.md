@@ -27,7 +27,7 @@ to use a GPU, and the target memory/CPU requirements.
 ### Deployment
 ```
 npm install
-npm install sst --save-exact
+
 npx sst deploy --stage Prod
 ```
 
