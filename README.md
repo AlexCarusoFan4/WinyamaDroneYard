@@ -23,6 +23,8 @@ Configure your AWS CLI client with your AWS Account.
 
 Ideally you will have AWSAdministratorAccess or an equivalent role.
 
+Prior to deployment, make sure Docker is running.
+
 The stack can be configured in `awsconfig.json`, which is where you'll set instance types, whether
 to use a GPU, and the target memory/CPU requirements.
 
@@ -30,11 +32,11 @@ to use a GPU, and the target memory/CPU requirements.
 ```
 npm install
 
-If this your first time deploying to this account, you will need to bootstrap your AWS account.
+#If this your first time deploying to this account, you will need to bootstrap your AWS account.
 
 cdk boostrap
 
-Otherwise, simply:
+#Otherwise, simply:
 
 cdk deploy
 ```
