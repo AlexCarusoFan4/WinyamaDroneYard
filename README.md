@@ -16,10 +16,12 @@ The goal is to make setup and deployment as simple as possible, and rely only on
 ## Usage
 
 ### Prerequisites
-DroneYard depends on AWS, NPM, and Docker.
+DroneYard depends on AWS, AWS CDK, NPM, and Docker.
 
 ### Configuration
-Set your region in `sst.config.ts` the default is **ap-southeast-2**.
+Configure your AWS CLI client with your AWS Account. 
+
+Ideally you will have AWSAdministratorAccess or an equivalent role.
 
 The stack can be configured in `awsconfig.json`, which is where you'll set instance types, whether
 to use a GPU, and the target memory/CPU requirements.
@@ -28,21 +30,19 @@ to use a GPU, and the target memory/CPU requirements.
 ```
 npm install
 
-npx sst deploy --stage Prod
+cdk deploy
 ```
 
 Everything is handled by the CDK. It will deploy an S3 bucket, a Lambda function, and an AWS Batch
-environment (using the default VPC.) SST/CDK will handle the entire deployment including building
+environment (using the default VPC.) CDK will handle the entire deployment including building
 the docker container, uploading it to ECR, setting up all the permissions, and preparing all the
 services.
-
-You can use any stage name (`Prod` is used by convention, but any is fine.)
 
 ### Usage
 After deploying, it will output a bucket name to the console, eg:
 
 ```
-BucketName: dev-drone-yard-droneyard-dronephotosbucket1234567-1234567890
+BucketName: winyamadroneyardstack-dronephotosbucket1234567-1234567890
 ```
 
 Create a folder in that bucket and upload all your photos into the bucket. `s3 sync` is useful for
@@ -56,7 +56,7 @@ be alongside your photos.
 ### Removal
 ```
 
-npx sst remove $STACK_NAME
+cdk destroy
 
 ```
 
