@@ -1,9 +1,9 @@
-import AWS from 'aws-sdk';
-import log from 'npmlog';
+const AWS = require('aws-sdk');
+const log = require('npmlog');
 
 const Batch = new AWS.Batch();
-/* eslint-disable import/prefer-default-export */
-export const handler = async (event) => {
+
+exports.handler = async (event) => {
   log.info('Execution', `Beginning dispatch_batch_job execution. ${JSON.stringify(event)}`);
 
   // Get the S3 path(s) -- multiple possible records can come in one invocation
