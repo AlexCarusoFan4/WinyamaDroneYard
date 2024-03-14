@@ -32,13 +32,14 @@ to use a GPU, and the target memory/CPU requirements.
 ```
 npm install
 
-#If this your first time deploying to this account, you will need to bootstrap your AWS account.
+# If this your first time deploying to this account, you will need to bootstrap your AWS account.
 
 cdk boostrap
 
-#Otherwise, simply:
+# Otherwise, simply:
 
-cdk deploy
+cdk deploy --require-approval never
+
 ```
 
 Everything is handled by the CDK. It will deploy an S3 bucket, a Lambda function, and an AWS Batch
