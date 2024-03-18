@@ -64,8 +64,7 @@ export class WinyamaDroneYardStack extends cdk.Stack {
 
     const awsManagedEnvironment = new batch.ComputeEnvironment(this, 'DroneYardComputeEnvironment', {
       computeResources: {
-        type: batch.ComputeResourceType.SPOT,
-        bidPercentage: awsConfig.computeEnv.bidPercentage,
+        type: batch.ComputeResourceType.ON_DEMAND,
         minvCpus: awsConfig.computeEnv.minvCpus,
         maxvCpus: awsConfig.computeEnv.maxvCpus,
         instanceTypes: awsConfig.computeEnv.instanceTypes,

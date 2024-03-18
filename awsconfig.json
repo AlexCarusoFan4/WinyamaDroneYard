@@ -3,7 +3,6 @@
     "useGpu": false,
     "minvCpus": 0,
     "maxvCpus": 128,
-    "bidPercentage": 100,
     "instanceTypes": [
       "r5.4xlarge"
     ]
