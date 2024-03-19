@@ -43,7 +43,7 @@ export class WinyamaDroneYardStack extends cdk.Stack {
           {
             deviceName: '/dev/xvda',
             ebs : {
-              volumeSize: 250,
+              volumeSize: 100,
               volumeType: 'gp2'
             }
           }
