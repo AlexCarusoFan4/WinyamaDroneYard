@@ -18,6 +18,14 @@ The goal is to make setup and deployment as simple as possible, and rely only on
 ### Prerequisites
 DroneYard depends on AWS, AWS CDK, NPM, and Docker.
 
+You will need to install the following in your development environment:
+
+- Git
+- Node/Node Package Manager
+- Docker Desktop
+- AWS CLI
+- AWS CDK Toolkit
+
 ### Configuration
 Configure your AWS CLI client with your AWS Account. 
 
@@ -30,6 +38,10 @@ to use a GPU, and the target memory/CPU requirements.
 
 ### Deployment
 ```
+git clone https://github.com/AlexCarusoFan4/WinyamaDroneYard.git
+
+cd WinyamaDroneYard
+
 npm install
 
 # If this your first time deploying to this account, you will need to bootstrap your AWS account.
