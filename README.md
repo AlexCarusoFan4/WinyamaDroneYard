@@ -75,7 +75,9 @@ You can also optionally upload a settings.yaml file where you set the parameters
 
 If you do not provide one, it will use the provided one in the top level of the S3 bucket by default.
 
-You can also optionally provide a ground control point (GCP) file (https://docs.opendronemap.org/gcp/).
+There is support for providing a ground control point (GCP) file (https://docs.opendronemap.org/gcp/) and custom boundary (https://docs.opendronemap.org/arguments/boundary/).
+
+The files must be named gcp-list.txt and boundary.json respectively.
 
 Once all your images are uploaded, upload an empty file named `dispatch` to the folder.
 
