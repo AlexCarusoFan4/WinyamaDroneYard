@@ -32,6 +32,9 @@ aws s3 cp s3://$BUCKET/$KEY/settings.yaml .  || true
 # try copying a boundary
 aws s3 cp s3://$BUCKET/$KEY/boundary.json .  || true
 
+# try copying a GCP file
+aws s3 cp s3://$BUCKET/$KEY/gcp_list.txt .  || true
+
 BOUNDARY="--auto-boundary"
 if test -f "boundary.json"; then
     BOUNDARY="--boundary boundary.json"
