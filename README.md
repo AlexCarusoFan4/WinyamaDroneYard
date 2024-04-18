@@ -13,6 +13,8 @@ This is an adaptation of the original DroneYard to account for deprecated AWS fe
 
 The goal is to make setup and deployment as simple as possible, and rely only on AWS, Docker, and NPM.
 
+![winyama-drone-yard-solution](https://github.com/AlexCarusoFan4/WinyamaDroneYard/assets/62007710/308e04b0-052c-4128-93b9-19bc9e2cc084)
+
 ## Usage
 
 ### Prerequisites
@@ -60,14 +62,20 @@ the docker container, uploading it to ECR, setting up all the permissions, and p
 services.
 
 ### Usage
-After deploying, it will output a bucket name to the console, eg:
+After the solution is deployed, you will have an S3 bucket, eg:
 
 ```
-BucketName: winyamadroneyardstack-dronephotosbucket1234567-1234567890
+BucketName: winyamadroneyardstack-dronephotosb1234567-1234567890
 ```
 
 Create a folder in that bucket and upload all your photos into the bucket. `s3 sync` is useful for
 this, but any client will work.
+
+You can also optionally upload a settings.yaml file where you set the parameters for the ODM processing job.
+
+If you do not provide one, it will use the provided one in the top level of the S3 bucket by default.
+
+You can also optionally provide a ground control point (GCP) file (https://docs.opendronemap.org/gcp/).
 
 Once all your images are uploaded, upload an empty file named `dispatch` to the folder.
 
@@ -76,9 +84,7 @@ be alongside your photos.
 
 ### Removal
 ```
-
 cdk destroy
-
 ```
 
 This will retain your S3 bucket. To avoid
