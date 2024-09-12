@@ -1,6 +1,6 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import * as batch from '@aws-cdk/aws-batch-alpha';
+import * as batch from 'aws-cdk-lib/aws-batch';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as iam from 'aws-cdk-lib/aws-iam';
@@ -32,23 +32,26 @@ export class WinyamaDroneYardStack extends cdk.Stack {
       ]
     });
 
-    const userData = fs.readFileSync('./userdata.sh', 'base64').toString();
+    const userData = fs.readFileSync('./userdata.sh').toString();
 
-    const launchTemplate = new ec2.CfnLaunchTemplate(this, 'DroneYardLaunchTemplate', {
+    const setupCommands = ec2.UserData.forLinux();
+    setupCommands.addCommands(userData);
 
-      launchTemplateName: `DroneYardLaunchTemplate`,
-      launchTemplateData: {
-        userData,
-        blockDeviceMappings: [
-          {
-            deviceName: '/dev/xvda',
-            ebs : {
-              volumeSize: 100,
-              volumeType: 'gp2'
-            }
-          }
-        ]
-      },
+    const multipartUserData = new ec2.MultipartUserData();
+    // The docker has to be configured at early stage, so content type is overridden to boothook
+    multipartUserData.addPart(ec2.MultipartBody.fromUserData(setupCommands, 'text/x-shellscript; charset="us-ascii"'));
+
+    const launchTemplate2 = new ec2.LaunchTemplate(this, 'DroneYardLaunchTemplate', {
+      launchTemplateName: 'DroneYardLaunchTemplate2',
+      userData: multipartUserData,
+      blockDevices: [
+        {
+          deviceName: '/dev/xvda',
+          volume: ec2.BlockDeviceVolume.ebs(100, {
+            volumeType: ec2.EbsDeviceVolumeType.GP3
+          })
+        }
+      ]
     });
 
     const dockerRole = new iam.Role(this, 'instance-role', {
@@ -57,24 +60,14 @@ export class WinyamaDroneYardStack extends cdk.Stack {
       managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AmazonEC2ContainerServiceforEC2Role')]
     });
 
-    const instanceProfile = new iam.CfnInstanceProfile(this, 'instance-profile', {
-      instanceProfileName: `DroneYard-instance-profile`,
-      roles: [dockerRole.roleName],
+    const awsManagedEnvironment = new batch.ManagedEc2EcsComputeEnvironment(this, 'DroneYardComputeEnvironment', {
+      vpc,
+      minvCpus: awsConfig.computeEnv.minvCpus,
+      maxvCpus: awsConfig.computeEnv.maxvCpus,
+      instanceTypes: awsConfig.computeEnv.instanceTypes,
+      instanceRole: dockerRole,
+      launchTemplate: launchTemplate2
     });
-
-    const awsManagedEnvironment = new batch.ComputeEnvironment(this, 'DroneYardComputeEnvironment', {
-      computeResources: {
-        type: batch.ComputeResourceType.ON_DEMAND,
-        minvCpus: awsConfig.computeEnv.minvCpus,
-        maxvCpus: awsConfig.computeEnv.maxvCpus,
-        instanceTypes: awsConfig.computeEnv.instanceTypes,
-        instanceRole: instanceProfile.attrArn,
-        vpc,
-        launchTemplate: {
-          launchTemplateName: launchTemplate.launchTemplateName,
-        },
-      }
-  });
 
     const jobQueue = new batch.JobQueue(this, 'DroneYardJobQueue', {
       computeEnvironments: [
@@ -91,8 +84,9 @@ export class WinyamaDroneYardStack extends cdk.Stack {
 
     const logging = new ecs.AwsLogDriver({ streamPrefix: "droneyardruns" })
 
-    const jobDefinition = new batch.JobDefinition(this, 'DroneYardJobDefinition', {
-      container: {
+    const jobDefinition = new batch.EcsJobDefinition(this, 'DroneYardJobDefinition', {
+      timeout: cdk.Duration.hours(24),
+      container: new batch.EcsEc2ContainerDefinition(this, 'DroneYardContainerDefinition', {
         command: [
           'sh',
           '-c',
@@ -101,29 +95,17 @@ export class WinyamaDroneYardStack extends cdk.Stack {
           'Ref::key',
           'output',
         ],
-        gpuCount: awsConfig.computeEnv.useGpu ? 1 : 0,
+        gpu: awsConfig.computeEnv.useGpu ? 1 : 0,
         image: ecs.ContainerImage.fromDockerImageAsset(dockerImage),
-        logConfiguration: {
-          logDriver: batch.LogDriver.AWSLOGS,
-        },
-        // TODO: Probably could set this dynamically or make it a part of the config
-        memoryLimitMiB: 120000,
-        mountPoints: [{
-          containerPath: '/local',
-          readOnly: false,
-          sourceVolume: 'local',
-        }],
+        memory: cdk.Size.mebibytes(120000),
+        cpu: 1,
         privileged: true,
-        vcpus: 0,
-        volumes: [{
+        volumes: [batch.EcsVolume.host({
           name: 'local',
-          host: {
-            sourcePath: '/local',
-          },
-        }],
-      },
-      // TODO: Make this configurable
-      timeout: cdk.Duration.hours(24),
+          containerPath: '/local'
+        })],
+        logging: logging
+      }),
     });
 
     const lambdaRole = new iam.Role(this, 'lambda-role', {
