@@ -71,6 +71,8 @@ BucketName: winyamadroneyardstack-dronephotosb1234567-1234567890
 Create a folder in that bucket and upload all your photos into the bucket. `s3 sync` is useful for
 this, but any client will work.
 
+Make sure your folder name doesn't contain any spaces or problematic characters.
+
 You can also optionally upload a settings.yaml file where you set the parameters for the ODM processing job.
 
 If you do not provide one, it will use the provided one in the top level of the S3 bucket by default.
