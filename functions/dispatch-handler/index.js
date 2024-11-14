@@ -27,7 +27,7 @@ exports.handler = async (event) => {
 
     const params = {
       jobDefinition: process.env.JOB_DEFINITION,
-      jobName: `DroneYard-${path.key}`,
+      jobName: `DroneYard-${path.key.replace(/\s/g,'')}`,
       jobQueue: process.env.JOB_QUEUE,
       parameters: {
         bucket: path.name,
