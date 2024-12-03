@@ -120,11 +120,11 @@ export class WinyamaDroneYardStack extends cdk.Stack {
     dispatchLambdaRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonS3FullAccess"));
     dispatchLambdaRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("AWSBatchFullAccess"));
 
-    const notificationLambdaRole = new iam.Role(this, 'notification-lambda-role', {
+    const snsLambdaRole = new iam.Role(this, 'sns-lambda-role', {
       assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com')
     })
 
-    notificationLambdaRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonSNSFullAccess"))
+    snsLambdaRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonSNSFullAccess"))
 
     const topic = new sns.Topic(this, 'Topic', {
       displayName: 'WinyamaDroneYard'
@@ -143,11 +143,11 @@ export class WinyamaDroneYardStack extends cdk.Stack {
       }
     })
 
-    const notificationFunction = new lambda.Function(this, 'NotificationHandler', {
+    const snsFunction = new lambda.Function(this, 'SNSHandler', {
       runtime: lambda.Runtime.NODEJS_20_X,
       handler: 'index.handler',
-      code: lambda.Code.fromAsset('functions/notification-handler'),
-      role: notificationLambdaRole,
+      code: lambda.Code.fromAsset('functions/sns-handler'),
+      role: snsLambdaRole,
       environment: {
         SNS_ARN: topic.topicArn
       }
@@ -173,7 +173,7 @@ export class WinyamaDroneYardStack extends cdk.Stack {
       }
     });
 
-    event.addTarget(new eventTarget.LambdaFunction(notificationFunction));
+    event.addTarget(new eventTarget.LambdaFunction(snsFunction));
 
     new s3Deploy.BucketDeployment(this, 'settings yaml', {
       sources: [s3Deploy.Source.asset(directory, { exclude: ['**', '.*', '!settings.yaml'] })],
