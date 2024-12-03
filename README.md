@@ -36,7 +36,7 @@ Ideally you will have AWSAdministratorAccess or an equivalent role.
 Prior to deployment, make sure Docker is running.
 
 The stack can be configured in `awsconfig.json`, which is where you'll set instance types, whether
-to use a GPU, and the target memory/CPU requirements.
+to use a GPU, the target memory/CPU requirements, and an email address to subscribe to batch job notifications.
 
 ### Deployment
 ```

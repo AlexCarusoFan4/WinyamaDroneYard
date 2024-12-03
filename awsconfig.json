@@ -6,5 +6,6 @@
     "instanceTypes": [
       "r5.4xlarge"
     ]
-  }
+  },
+  "notificationEmail": "john@example.com"
 }

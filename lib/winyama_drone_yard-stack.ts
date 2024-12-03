@@ -8,6 +8,10 @@ import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as s3n from 'aws-cdk-lib/aws-s3-notifications'
 import * as lambda from 'aws-cdk-lib/aws-lambda'
 import * as s3Deploy from 'aws-cdk-lib/aws-s3-deployment';
+import * as sns from 'aws-cdk-lib/aws-sns';
+import * as subscriptions from 'aws-cdk-lib/aws-sns-subscriptions'
+import * as events from 'aws-cdk-lib/aws-events'
+import * as eventTarget from 'aws-cdk-lib/aws-events-targets'
 import { DockerImageAsset } from 'aws-cdk-lib/aws-ecr-assets';
 
 const fs = require('fs');
@@ -108,31 +112,68 @@ export class WinyamaDroneYardStack extends cdk.Stack {
       }),
     });
 
-    const lambdaRole = new iam.Role(this, 'lambda-role', {
+    const dispatchLambdaRole = new iam.Role(this, 'dispatch-lambda-role', {
       assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com')
     })
 
-    lambdaRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("service-role/AWSLambdaBasicExecutionRole"));
-    lambdaRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonS3FullAccess"));
-    lambdaRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("AWSBatchFullAccess"));
+    dispatchLambdaRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("service-role/AWSLambdaBasicExecutionRole"));
+    dispatchLambdaRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonS3FullAccess"));
+    dispatchLambdaRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("AWSBatchFullAccess"));
 
-    const lambdaFunction = new lambda.Function(this, 'DispatchHandler', {
+    const notificationLambdaRole = new iam.Role(this, 'notification-lambda-role', {
+      assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com')
+    })
+
+    notificationLambdaRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonSNSFullAccess"))
+
+    const topic = new sns.Topic(this, 'Topic', {
+      displayName: 'WinyamaDroneYard'
+    })
+
+    topic.addSubscription(new subscriptions.EmailSubscription(awsConfig.notificationEmail))
+
+    const dispatchFunction = new lambda.Function(this, 'DispatchHandler', {
       runtime: lambda.Runtime.NODEJS_20_X,
       handler: 'index.handler',
       code: lambda.Code.fromAsset('functions/dispatch-handler'),
-      role: lambdaRole,
+      role: dispatchLambdaRole,
       environment: {
         JOB_DEFINITION: jobDefinition.jobDefinitionName,
         JOB_QUEUE: jobQueue.jobQueueName
       }
     })
 
-    const dronePhotosBucket = new s3.Bucket(this, 'DronePhotos', {
-      
+    const notificationFunction = new lambda.Function(this, 'NotificationHandler', {
+      runtime: lambda.Runtime.NODEJS_20_X,
+      handler: 'index.handler',
+      code: lambda.Code.fromAsset('functions/notification-handler'),
+      role: notificationLambdaRole,
+      environment: {
+        SNS_ARN: topic.topicArn
+      }
+    })
+
+    const dronePhotosBucket = new s3.Bucket(this, 'DronePhotos', {      
     });
 
-    dronePhotosBucket.addEventNotification(s3.EventType.OBJECT_CREATED, new s3n.LambdaDestination(lambdaFunction), {suffix: 'dispatch'});
+    dronePhotosBucket.addEventNotification(s3.EventType.OBJECT_CREATED, new s3n.LambdaDestination(dispatchFunction), {suffix: 'dispatch'});
     dronePhotosBucket.grantReadWrite(dockerRole);
+
+    const event = new events.Rule(this, 'NotificationRule', {
+      ruleName: 'DroneYardNotificationRule',
+      eventPattern: {
+        source: ['aws.batch'],
+        detailType: ['Batch Job State Change'],
+        detail: {
+          parameters: {
+            bucket: [dronePhotosBucket.bucketName]
+          },
+          status: ["FAILED","STARTING","SUBMITTED","SUCCEEDED"]
+        }
+      }
+    });
+
+    event.addTarget(new eventTarget.LambdaFunction(notificationFunction));
 
     new s3Deploy.BucketDeployment(this, 'settings yaml', {
       sources: [s3Deploy.Source.asset(directory, { exclude: ['**', '.*', '!settings.yaml'] })],
