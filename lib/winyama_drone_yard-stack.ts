@@ -124,6 +124,7 @@ export class WinyamaDroneYardStack extends cdk.Stack {
       assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com')
     })
 
+    snsLambdaRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("service-role/AWSLambdaBasicExecutionRole"));
     snsLambdaRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonSNSFullAccess"))
 
     const topic = new sns.Topic(this, 'Topic', {
