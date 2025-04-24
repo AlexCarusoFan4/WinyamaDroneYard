@@ -45,8 +45,8 @@ export class WinyamaDroneYardStack extends cdk.Stack {
     // The docker has to be configured at early stage, so content type is overridden to boothook
     multipartUserData.addPart(ec2.MultipartBody.fromUserData(setupCommands, 'text/x-shellscript; charset="us-ascii"'));
 
-    const launchTemplate2 = new ec2.LaunchTemplate(this, 'DroneYardLaunchTemplate', {
-      launchTemplateName: 'DroneYardLaunchTemplate2',
+    const launchTemplate = new ec2.LaunchTemplate(this, 'DroneYardLaunchTemplate', {
+      launchTemplateName: 'DroneYardLaunchTemplate',
       userData: multipartUserData,
       blockDevices: [
         {
@@ -70,7 +70,7 @@ export class WinyamaDroneYardStack extends cdk.Stack {
       maxvCpus: awsConfig.computeEnv.maxvCpus,
       instanceTypes: awsConfig.computeEnv.instanceTypes,
       instanceRole: dockerRole,
-      launchTemplate: launchTemplate2
+      launchTemplate: launchTemplate
     });
 
     const jobQueue = new batch.JobQueue(this, 'DroneYardJobQueue', {
