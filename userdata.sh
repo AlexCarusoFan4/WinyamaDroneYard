@@ -20,7 +20,7 @@ DAEMON_MAXFILES=1048576
 # Additional startup options for the Docker daemon, for example:
 # OPTIONS="--ip-forward=true --iptables=true"
 # By default we limit the number of open files per container
-OPTIONS="--default-ulimit nofile=1024:4096 -g /local/docker"
+OPTIONS="--default-ulimit nofile=1024:4096 --data-root=/local/docker"
 
 # How many seconds the sysvinit script waits for the pidfile to appear
 # when starting the daemon.
