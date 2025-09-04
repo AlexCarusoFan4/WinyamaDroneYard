@@ -134,7 +134,7 @@ export class WinyamaDroneYardStack extends cdk.Stack {
     topic.addSubscription(new subscriptions.EmailSubscription(awsConfig.notificationEmail))
 
     const dispatchFunction = new lambda.Function(this, 'DispatchHandler', {
-      runtime: lambda.Runtime.NODEJS_20_X,
+      runtime: lambda.Runtime.NODEJS_LATEST,
       handler: 'index.handler',
       code: lambda.Code.fromAsset('functions/dispatch-handler'),
       role: dispatchLambdaRole,
@@ -145,7 +145,7 @@ export class WinyamaDroneYardStack extends cdk.Stack {
     })
 
     const snsFunction = new lambda.Function(this, 'SNSHandler', {
-      runtime: lambda.Runtime.NODEJS_20_X,
+      runtime: lambda.Runtime.NODEJS_LATEST,
       handler: 'index.handler',
       code: lambda.Code.fromAsset('functions/sns-handler'),
       role: snsLambdaRole,
