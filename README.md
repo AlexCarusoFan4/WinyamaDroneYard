@@ -48,7 +48,7 @@ npm install
 
 # If this your first time deploying to this account, you will need to bootstrap your AWS account.
 
-cdk boostrap
+cdk bootstrap
 
 # Otherwise, simply:
 
