@@ -29,14 +29,14 @@ You will need to install the following in your development environment:
 - AWS CDK (https://docs.aws.amazon.com/cdk/v2/guide/getting-started.html)
 
 ### Configuration
-Configure your AWS CLI client with your AWS Account. 
+Configure the AWS CLI client with credentials and details for your deployment AWS Account (https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html).
 
-Ideally you will have AWSAdministratorAccess or an equivalent role.
+Make sure you are using an account or role with adequate permissions to deploy all of the resources.
 
-Prior to deployment, make sure Docker is running.
+Prior to deployment, make sure Docker is running (required to build the docker container image).
 
 The stack can be configured in `awsconfig.json`, which is where you'll set instance types, whether
-to use a GPU, the target memory/CPU requirements, and an email address to subscribe to batch job notifications.
+to use a GPU, the target CPU requirements and an email address to subscribe to batch job notifications.
 
 ### Deployment
 ```
@@ -57,10 +57,7 @@ Otherwise, simply:
 cdk deploy --require-approval never
 ```
 
-Everything is handled by the CDK. It will deploy an S3 bucket, a Lambda function, and an AWS Batch
-environment (using the default VPC.) CDK will handle the entire deployment including building
-the docker container, uploading it to ECR, setting up all the permissions, and preparing all the
-services.
+Everything is handled by AWS CDK. It will deploy all the resources for you automatically.
 
 ### Usage
 After the solution is deployed, you will have an S3 bucket, eg:
