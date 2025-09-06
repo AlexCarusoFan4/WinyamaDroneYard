@@ -13,7 +13,7 @@ This is an adaptation of the original DroneYard to account for deprecated AWS fe
 
 The goal is to make setup and deployment as simple as possible, and rely only on AWS, Docker, and NPM.
 
-![winyama-drone-yard-solution](https://github.com/AlexCarusoFan4/WinyamaDroneYard/assets/62007710/308e04b0-052c-4128-93b9-19bc9e2cc084)
+<img width="3363" height="2286" alt="winyamadroneyard-architecture-diagram" src="https://github.com/user-attachments/assets/6dc922ef-6d7b-47cf-83fe-60c35d76b528" />
 
 ## Usage
 
