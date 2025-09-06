@@ -33,10 +33,10 @@ Configure the AWS CLI client with credentials and details for your deployment AW
 
 Make sure you are using an account or role with adequate permissions to deploy all of the resources.
 
-Prior to deployment, make sure Docker is running (required to build the docker container image).
-
 The stack can be configured in `awsconfig.json`, which is where you'll set instance types, whether
 to use a GPU, the target CPU requirements and an email address to subscribe to batch job notifications.
+
+Prior to deployment, make sure Docker is running (required to build the docker container image).
 
 ### Deployment
 ```
@@ -64,7 +64,7 @@ After the solution is deployed, you will have an S3 bucket, eg:
 
 winyamadroneyardstack-dronephotosb1234567-1234567890
 
-Create a folder in that bucket and upload all your photos into the bucket. `s3 sync` is useful for
+Create a new folder in that bucket for your project and upload your imagery dataset. The AWS CLI and `s3 sync` is useful for
 this, but any client will work.
 
 Make sure your folder name doesn't contain any spaces or problematic characters.
@@ -79,10 +79,12 @@ There is support for providing a ground control point (GCP) file (https://docs.o
 
 The files must be named gcp-list.txt and boundary.json respectively.
 
-Once all your images are uploaded, upload an empty file named `dispatch` to the folder.
+Once all of your images have been uploaded, create and upload a new, empty file named `dispatch` (no file type extension) to the folder. An example has been provided in the repository here: [WinyamaDroneYard/assets/dispatch](/assets/dispatch).
 
 This will start the workflow. When the image processing is complete, a folder called `output` will
-be alongside your photos.
+be present alongside your photos.
+
+Download your outputs to view them with software and use them in your projects.
 
 If you need some inspiration, example datasets can be found here: https://opendronemap.org/odm/datasets/.
 
