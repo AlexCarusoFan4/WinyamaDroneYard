@@ -42,7 +42,9 @@ to use a GPU, the target memory/CPU requirements, and an email address to subscr
 ```
 git clone https://github.com/AlexCarusoFan4/WinyamaDroneYard.git
 ```
+```
 cd WinyamaDroneYard
+```
 ```
 npm install
 ```
