@@ -48,11 +48,11 @@ cd WinyamaDroneYard
 ```
 npm install
 ```
-# If this your first time deploying to this account, you will need to bootstrap your AWS account.
+#### If this your first time deploying to this account, you will need to bootstrap your AWS account.
 ```
 cdk bootstrap
 ```
-# Otherwise, simply:
+#### Otherwise, simply:
 ```
 cdk deploy --require-approval never
 ```
@@ -65,7 +65,7 @@ services.
 ### Usage
 After the solution is deployed, you will have an S3 bucket, eg:
 
-# BucketName: winyamadroneyardstack-dronephotosb1234567-1234567890
+#### BucketName: winyamadroneyardstack-dronephotosb1234567-1234567890
 
 Create a folder in that bucket and upload all your photos into the bucket. `s3 sync` is useful for
 this, but any client will work.
