@@ -87,6 +87,8 @@ Once all your images are uploaded, upload an empty file named `dispatch` to the 
 This will start the workflow. When the image processing is complete, a folder called `output` will
 be alongside your photos.
 
+If you need some inspiration, example datasets can be found here: https://opendronemap.org/odm/datasets/.
+
 ### Removal
 ```
 cdk destroy
