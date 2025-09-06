@@ -22,11 +22,11 @@ DroneYard depends on AWS, AWS CDK, NPM, and Docker.
 
 You will need to install the following in your development environment:
 
-- Git
-- Node/Node Package Manager
-- Docker Desktop
-- AWS CLI
-- AWS CDK Toolkit
+- Git (https://github.com/git-guides/install-git)
+- Node/Node Package Manager (https://nodejs.org/en/download/)
+- Docker Desktop (https://docs.docker.com/desktop/)
+- AWS CLI (https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+- AWS CDK (https://docs.aws.amazon.com/cdk/v2/guide/getting-started.html)
 
 ### Configuration
 Configure your AWS CLI client with your AWS Account. 
