@@ -65,7 +65,8 @@ services.
 ### Usage
 After the solution is deployed, you will have an S3 bucket, eg:
 
-#### BucketName: winyamadroneyardstack-dronephotosb1234567-1234567890
+#### winyamadroneyardstack-dronephotosb1234567-1234567890
+
 
 Create a folder in that bucket and upload all your photos into the bucket. `s3 sync` is useful for
 this, but any client will work.
