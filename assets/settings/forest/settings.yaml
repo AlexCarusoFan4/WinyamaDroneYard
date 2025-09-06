@@ -1,0 +1,4 @@
+auto_boundary: True
+min_num_features: 18000
+use_3dmesh: True
+feature_quality: medium

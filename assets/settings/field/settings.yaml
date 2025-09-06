@@ -1,0 +1,3 @@
+sfm_algorithm: planar
+fast_orthophoto: True
+matcher_neighbors: 4

@@ -1,0 +1,5 @@
+auto_boundary: True
+dsm: True
+pc_quality: high
+dem_resolution: 2.0
+orthophoto_resolution: 2.0

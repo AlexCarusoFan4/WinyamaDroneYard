@@ -1,0 +1,5 @@
+auto_boundary: True
+mesh_octree_depth: 12
+use_3dmesh: True
+pc_quality: high
+mesh_size: 300000

@@ -73,7 +73,9 @@ this, but any client will work.
 
 Make sure your folder name doesn't contain any spaces or problematic characters.
 
-You can also optionally upload a settings.yaml file where you set the parameters for the ODM processing job.
+You can also optionally upload a settings.yaml file where you set the parameters (https://docs.opendronemap.org/arguments/) for the ODM processing job.
+
+Some pre-set options have been provided here: [link](/assets/settings).
 
 If you do not provide one, it will use the provided one in the top level of the S3 bucket by default.
 

@@ -1,0 +1,4 @@
+auto_boundary: True
+dsm: True
+dem_resolution: 2
+pc_quality: high

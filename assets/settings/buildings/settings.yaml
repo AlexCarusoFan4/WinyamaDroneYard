@@ -1,0 +1,4 @@
+auto_boundary: True
+mesh_size: 300000
+feature_quality: high
+pc_quality: high
