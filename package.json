@@ -2,7 +2,7 @@
   "name": "serverless-opendronemap",
   "version": "1.0.0",
   "bin": {
-    "winyama_drone_yard": "bin/winyama_drone_yard.js"
+    "serverless-opendronemap": "bin/serverless-opendronemap.js"
   },
   "scripts": {
     "postinstall": "cd functions/dispatch-handler && npm install",
