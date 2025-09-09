@@ -1,10 +1,10 @@
-# serverless-opendronemap - Run OpenDroneMap processing jobs easily on AWS
+# Serverless OpenDroneMap - Run imagery processing jobs easily on AWS
 
-serverless-opendronemap makes running OpenDroneMap (https://github.com/OpenDroneMap/ODM) as simple as uploading your images and downloading the results. serverless-opendronemap is a set of automated tooling built on top of AWS Batch that monitors
+Serverless OpenDroneMap makes running OpenDroneMap (https://github.com/OpenDroneMap/ODM) as simple as uploading your images and downloading the results. Serverless OpenDroneMap is a set of automated tooling built on top of AWS Batch that monitors
 an S3 bucket for changes, and when it detects the presence of a trigger file, it will launch a
 batch job to process your images.
 
-serverless-opendronemap borrows inspiration and some code from https://github.com/hobuinc/codm, but makes different
+Serverless OpenDroneMap borrows inspiration and some code from https://github.com/hobuinc/codm, but makes different
 choices about dependencies. In particular, everything is handled by the CDK so it can be built and deployed
 with one single command.
 
@@ -17,7 +17,7 @@ The goal is to make setup and deployment as simple as possible, and rely only on
 ## Usage
 
 ### Prerequisites
-serverless-opendronemap depends on AWS, AWS CDK, NPM, and Docker.
+Serverless OpenDroneMap depends on AWS, AWS CDK, NPM, and Docker.
 
 You will need to install the following in your development environment:
 

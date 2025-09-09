@@ -1,4 +1,4 @@
-# Contributing to serverless-opendronemap
+# Contributing to Serverless OpenDroneMap
 
 We currently do not allow public contributions.
 
