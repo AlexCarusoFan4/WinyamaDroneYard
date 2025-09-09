@@ -61,7 +61,7 @@ Everything is handled by AWS CDK. It will deploy all the resources for you autom
 ### Usage
 After the solution is deployed, you will have an S3 bucket, eg:
 
-winyamadroneyardstack-dronephotosb1234567-1234567890
+serverlessodmstack-imageryfeb8bc81-a8jnkxd7mvmo
 
 Create a new folder in that bucket for your project and upload your imagery dataset. The AWS CLI and `s3 sync` is useful for
 this, but any client will work.
