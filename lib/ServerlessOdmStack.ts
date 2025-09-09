@@ -21,7 +21,7 @@ const awsConfig = require('../awsconfig.json');
 // eslint-disable-next-line no-underscore-dangle
 const directory = path.resolve();
 
-export class WinyamaDroneYardStack extends cdk.Stack {
+export class ServerlessOdmStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
@@ -45,8 +45,8 @@ export class WinyamaDroneYardStack extends cdk.Stack {
     // The docker has to be configured at early stage, so content type is overridden to boothook
     multipartUserData.addPart(ec2.MultipartBody.fromUserData(setupCommands, 'text/x-shellscript; charset="us-ascii"'));
 
-    const launchTemplate = new ec2.LaunchTemplate(this, 'DroneYardLaunchTemplate', {
-      launchTemplateName: 'DroneYardLaunchTemplate',
+    const launchTemplate = new ec2.LaunchTemplate(this, 'LaunchTemplate', {
+      launchTemplateName: 'ServerlessOdmLaunchTemplate',
       userData: multipartUserData,
       blockDevices: [
         {
@@ -58,13 +58,13 @@ export class WinyamaDroneYardStack extends cdk.Stack {
       ]
     });
 
-    const dockerRole = new iam.Role(this, 'instance-role', {
+    const dockerRole = new iam.Role(this, 'InstanceRole', {
       assumedBy: new iam.ServicePrincipal('ec2.amazonaws.com'),
-      description: 'Execution role for the docker container, has access to the DroneYard S3 bucket',
+      description: 'Execution role for the docker container, has access to the Serverless ODM S3 bucket',
       managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AmazonEC2ContainerServiceforEC2Role')]
     });
 
-    const awsManagedEnvironment = new batch.ManagedEc2EcsComputeEnvironment(this, 'DroneYardComputeEnvironment', {
+    const awsManagedEnvironment = new batch.ManagedEc2EcsComputeEnvironment(this, 'ServerlessOdmCE', {
       vpc,
       minvCpus: awsConfig.computeEnv.minvCpus,
       maxvCpus: awsConfig.computeEnv.maxvCpus,
@@ -73,7 +73,7 @@ export class WinyamaDroneYardStack extends cdk.Stack {
       launchTemplate: launchTemplate
     });
 
-    const jobQueue = new batch.JobQueue(this, 'DroneYardJobQueue', {
+    const jobQueue = new batch.JobQueue(this, 'ServerlessOdmJobQueue', {
       computeEnvironments: [
         {
           computeEnvironment: awsManagedEnvironment,
@@ -82,15 +82,15 @@ export class WinyamaDroneYardStack extends cdk.Stack {
       ]
     });
 
-    const dockerImage = new DockerImageAsset(this, 'DroneYardDockerImage', {
+    const dockerImage = new DockerImageAsset(this, 'ServerlessOdmDockerImage', {
       directory: path.join(directory, awsConfig.computeEnv.useGpu ? 'dockergpu' : 'docker'),
     });
 
-    const logging = new ecs.AwsLogDriver({ streamPrefix: "droneyardruns" })
+    const logging = new ecs.AwsLogDriver({ streamPrefix: "serverlessodmruns" })
 
-    const jobDefinition = new batch.EcsJobDefinition(this, 'DroneYardJobDefinition', {
+    const jobDefinition = new batch.EcsJobDefinition(this, 'ServerlessOdmJobDefinition', {
       timeout: cdk.Duration.hours(24),
-      container: new batch.EcsEc2ContainerDefinition(this, 'DroneYardContainerDefinition', {
+      container: new batch.EcsEc2ContainerDefinition(this, 'ServerlessOdmContainerDefinition', {
         command: [
           'sh',
           '-c',
@@ -112,7 +112,7 @@ export class WinyamaDroneYardStack extends cdk.Stack {
       }),
     });
 
-    const dispatchLambdaRole = new iam.Role(this, 'dispatch-lambda-role', {
+    const dispatchLambdaRole = new iam.Role(this, 'DispatchHandlerRole', {
       assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com')
     })
 
@@ -120,7 +120,7 @@ export class WinyamaDroneYardStack extends cdk.Stack {
     dispatchLambdaRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonS3FullAccess"));
     dispatchLambdaRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("AWSBatchFullAccess"));
 
-    const snsLambdaRole = new iam.Role(this, 'sns-lambda-role', {
+    const snsLambdaRole = new iam.Role(this, 'SnsHandlerRole', {
       assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com')
     })
 
@@ -128,7 +128,7 @@ export class WinyamaDroneYardStack extends cdk.Stack {
     snsLambdaRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonSNSFullAccess"))
 
     const topic = new sns.Topic(this, 'Topic', {
-      displayName: 'WinyamaDroneYard'
+      displayName: 'Serverless OpenDroneMap'
     })
 
     topic.addSubscription(new subscriptions.EmailSubscription(awsConfig.notificationEmail))
@@ -154,20 +154,20 @@ export class WinyamaDroneYardStack extends cdk.Stack {
       }
     })
 
-    const dronePhotosBucket = new s3.Bucket(this, 'DronePhotos', {      
+    const imageryBucket = new s3.Bucket(this, 'Imagery', {      
     });
 
-    dronePhotosBucket.addEventNotification(s3.EventType.OBJECT_CREATED, new s3n.LambdaDestination(dispatchFunction), {suffix: 'dispatch'});
-    dronePhotosBucket.grantReadWrite(dockerRole);
+    imageryBucket.addEventNotification(s3.EventType.OBJECT_CREATED, new s3n.LambdaDestination(dispatchFunction), {suffix: 'dispatch'});
+    imageryBucket.grantReadWrite(dockerRole);
 
     const event = new events.Rule(this, 'NotificationRule', {
-      ruleName: 'DroneYardNotificationRule',
+      ruleName: 'ServerlessOdmNotificationRule',
       eventPattern: {
         source: ['aws.batch'],
         detailType: ['Batch Job State Change'],
         detail: {
           parameters: {
-            bucket: [dronePhotosBucket.bucketName]
+            bucket: [imageryBucket.bucketName]
           },
           status: ["FAILED","STARTING","SUBMITTED","SUCCEEDED"]
         }
@@ -178,7 +178,7 @@ export class WinyamaDroneYardStack extends cdk.Stack {
 
     new s3Deploy.BucketDeployment(this, 'settings yaml', {
       sources: [s3Deploy.Source.asset(directory, { exclude: ['**', '.*', '!settings.yaml'] })],
-      destinationBucket: dronePhotosBucket
+      destinationBucket: imageryBucket
     });
   }
 }

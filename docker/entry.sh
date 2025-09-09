@@ -9,7 +9,7 @@
 # which is licensed GPLv3. This code therefore is also licensed under the terms
 # of the GNU Public License, verison 3.
 
-echo "Launching DroneYard"
+echo "Launching Serverless OpenDroneMap"
 
 BUCKET="$4"
 KEY="$5"

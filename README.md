@@ -1,11 +1,10 @@
-# WinyamaDroneYard - OpenDroneMap Serverless Automation
+# serverless-opendronemap - OpenDroneMap Serverless Automation
 
-DroneYard makes running OpenDroneMap automatically as simple as uploading your images and downloading
-the results. DroneYard is a set of automated tooling built on top of AWS Batch that monitors
+serverless-opendronemap makes running OpenDroneMap (https://github.com/OpenDroneMap/ODM) as simple as uploading your images and downloading the results. serverless-opendronemap is a set of automated tooling built on top of AWS Batch that monitors
 an S3 bucket for changes, and when it detects the presence of a trigger file, it will launch a
 batch job to process your images.
 
-DroneYard borrows inspiration and some code from https://github.com/hobuinc/codm, but makes different
+serverless-opendronemap borrows inspiration and some code from https://github.com/hobuinc/codm, but makes different
 choices about dependencies. In particular, everything is handled by the CDK so it can be built and deployed
 with one single command.
 
@@ -13,12 +12,12 @@ This is an adaptation of the original DroneYard to account for deprecated AWS fe
 
 The goal is to make setup and deployment as simple as possible, and rely only on AWS, Docker, and NPM.
 
-<img width="3363" height="2286" alt="winyamadroneyard-architecture-diagram" src="https://github.com/user-attachments/assets/6dc922ef-6d7b-47cf-83fe-60c35d76b528" />
+<img width="3363" height="2286" alt="Serverless OpenDroneMap architecture diagram" src="https://github.com/user-attachments/assets/6dc922ef-6d7b-47cf-83fe-60c35d76b528" />
 
 ## Usage
 
 ### Prerequisites
-DroneYard depends on AWS, AWS CDK, NPM, and Docker.
+serverless-opendronemap depends on AWS, AWS CDK, NPM, and Docker.
 
 You will need to install the following in your development environment:
 
@@ -40,10 +39,10 @@ Prior to deployment, make sure Docker is running (required to build the docker c
 
 ### Deployment
 ```
-git clone https://github.com/AlexCarusoFan4/WinyamaDroneYard.git
+git clone https://github.com/AlexCarusoFan4/serverless-opendronemap.git
 ```
 ```
-cd WinyamaDroneYard
+cd serverless-opendronemap
 ```
 ```
 npm install
@@ -71,7 +70,7 @@ Make sure your folder name doesn't contain any spaces or problematic characters.
 
 You can also optionally upload a settings.yaml file where you set the parameters (https://docs.opendronemap.org/arguments/) for the ODM processing job.
 
-Some pre-set options have been provided in the repository here: [WinyamaDroneYard/assets/settings](/assets/settings).
+Some pre-set options have been provided in the repository here: [serverless-opendronemap/assets/settings](/assets/settings).
 
 If you do not provide one, it will use the provided one in the top level of the S3 bucket by default.
 
@@ -79,7 +78,7 @@ There is support for providing a ground control point (GCP) file (https://docs.o
 
 The files must be named gcp-list.txt and boundary.json respectively.
 
-Once all of your images have been uploaded, create and upload a new, empty file named `dispatch` (no file type extension) to the folder. An example has been provided in the repository here: [WinyamaDroneYard/assets/dispatch](/assets/dispatch).
+Once all of your images have been uploaded, create and upload a new, empty file named `dispatch` (no file type extension) to the folder. An example has been provided in the repository here: [serverless-opendronemap/assets/dispatch](/assets/dispatch).
 
 This will start the workflow. When the image processing is complete, a folder called `output` will
 be present alongside your photos.
