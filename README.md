@@ -1,4 +1,5 @@
-# Serverless OpenDroneMap - Imagery Processing Made Easy with AWS
+# Serverless OpenDroneMap
+## Imagery Processing Made Easy with AWS
 
 Serverless OpenDroneMap makes running OpenDroneMap (https://github.com/OpenDroneMap/ODM) as simple as uploading your images and downloading the results. Serverless OpenDroneMap is a set of automated tooling built on top of AWS Batch that monitors
 an S3 bucket for changes, and when it detects the presence of a trigger file, it will launch a
